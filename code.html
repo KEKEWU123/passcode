@@ -22,15 +22,15 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 50px;
+            height: 100%;
             background-color: #0076ff;
             z-index: 0;
         }
         .container { 
-            width: calc(100% - 40px); 
+            width: calc(100% - 20px); 
             max-width: 480px; 
             background: white; 
-            border-radius: 0 0 8px 8px; /* 只保留底部圆角 */
+            border-radius: 8px; /* 四周圆角 */
             overflow: hidden; 
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); 
             margin: 0 auto; /* 确保居中 */
@@ -46,7 +46,7 @@
             position: absolute;
             top: 0;
             bottom: 0;
-            width: 15px;
+            width: 10px;
             background-color: #0d562a;
             z-index: 1;
         }
@@ -66,8 +66,8 @@
             position: relative; /* 为子元素定位提供参考 */
             /* 让header覆盖边框区域，但内容在安全区内 */
             z-index: 2; /* 确保在边框之上 */
-            width: calc(100% + 30px);
-            margin-left: -15px;
+            width: calc(100% + 20px);
+            margin-left: -10px;
         }
         /* 创建header的安全区域，内容不延伸到边框 */
         .header-inner {
@@ -188,7 +188,7 @@
             position: relative;
             z-index: 1; /* 确保在边框之上 */
             /* 为白色内容区域添加内边距，避开边框 */
-            margin: 0 15px;
+            margin: 0 10px;
         }
         .time-box { 
             background: #2c3e50; 
