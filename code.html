@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北理珠通行码</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: '微软雅黑', Arial, sans-serif; 
+            background: linear-gradient(to right, #0d562a 0%, #0d562a 10%, #ffffff 10%, #ffffff 90%, #0d562a 90%, #0d562a 100%); 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; /* 改为顶部对齐 */
+            padding: 0; /* 去掉所有padding */
+        }
+        .container { 
+            width: 100%; 
+            max-width: 480px; 
+            background: white; 
+            border-radius: 0 0 8px 8px; /* 只保留底部圆角 */
+            overflow: hidden; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); 
+            margin: 0 auto; /* 确保居中 */
+        }
+        .header { 
+            background: linear-gradient(to bottom, #0076ff 0%, #0076ff 35%, #0d562a 35%, #0d562a 100%); 
+            color: white; 
+            padding: 0; 
+            display: flex; /* 添加flex布局 */
+            flex-direction: column; /* 垂直排列 */
+            min-height: 180px; /* 固定高度 */
+            position: relative; /* 为子元素定位提供参考 */
+        }
+        .header-top { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 0; /* 去掉下边距 */
+            font-size: 16px; 
+            font-weight: bold; 
+            padding: 15px 20px 0 20px; 
+            height: 45px; /* 固定顶部区域高度 */
+        }
+        .header-title { font-size: 16px; font-weight: bold; }
+        .logo-school { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 15px; 
+            padding: 0 20px; /* 移除底部padding */
+            height: 135px; /* 固定logo区域高度：180px - 45px */
+            position: absolute; /* 绝对定位，便于居中控制 */
+            top: 45px; /* 从header-top下面开始 */
+            left: 0;
+            right: 0;
+        }
+        .logo { 
+            width: 70px; 
+            height: 70px; 
+            background: transparent; /* 改为透明背景 */
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0; 
+            overflow: hidden; /* 确保图片不会溢出 */
+            /* 移除边框 */
+            border: none;
+        }
+        .logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 改为cover以填充整个圆形区域 */
+            display: block;
+            border-radius: 50%; /* 添加圆角以匹配容器 */
+            /* 移除背景色，让图片显示原始颜色 */
+            background-color: transparent;
+        }
+        .school-info { 
+            text-align: left; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; /* 垂直居中 */
+        }
+        .school-main-container {
+            display: flex;
+            align-items: flex-end; /* 改为底部对齐，使中英文在同一行 */
+            min-height: 50px; /* 与图片高度匹配 */
+        }
+        .bit-logo-full {
+            max-height: 45px; /* 调整校徽图片高度 */
+            width: auto;
+            display: block;
+        }
+        .zhuhai-info {
+            margin-left: 4px; /* 保持一个空格的间距 */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* 底部对齐 */
+            margin-bottom: 1px; /* 进一步减少底部间距，调整高度对齐 */
+        }
+        .zhuhai-chinese {
+            font-family: "STKaiti", "KaiTi", "楷体", "华文楷体", "Microsoft YaHei", serif;
+            color: white;
+            font-size: 20px; /* 增大字体 */
+            font-weight: 500; /* 正常粗细 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            line-height: 1.1; /* 减小行高，使中文更紧凑 */
+            margin-bottom: 0; /* 移除底部间距 */
+        }
+        .zhuhai-english {
+            font-size: 9.4px; /* 保持合适的大小 */
+            letter-spacing: 0.5px; /* 减少字间距，使更紧凑 */
+            font-family: 'Helvetica', 'Arial Narrow', Arial, sans-serif; /* 使用Helvetica，这是更细的字体 */
+            font-weight: 170; /* 改为200，更瘦的字体 */
+            color: #fdfdfd; /* 指定的浅灰色 */
+            line-height: 1.0; /* 进一步减小行高，使高度更紧凑 */
+            margin-top: 0; /* 移除上边距 */
+            margin-left: 0; /* 移除左移 */
+            filter: blur(0.1px) contrast(0.92) brightness(0.95); /* 轻微模糊，调整对比度和亮度 */
+            text-rendering: optimizeLegibility; /* 优化文字清晰度 */
+            -webkit-font-smoothing: antialiased; /* 抗锯齿 */
+            -moz-osx-font-smoothing: grayscale; /* 字体平滑 */
+            opacity: 0.97; /* 轻微透明度 */
+            /* 右侧阴影效果 - 模拟图片中的立体感 */
+            text-shadow: 
+                0.3px 0 0.2px rgba(23, 21, 21, 0.15), /* 右侧轻微黑色阴影 */
+                0 0 0.3px rgba(232, 231, 231, 0.6); /* 主文字发光效果 */
+            transform: scale(0.98) translateX(-0.18px) translateY(-1.1px); 
+            transform-origin: left bottom; /* 从左上角缩放 */
+            display: inline-block; /* 确保transform生效 */
+            font-stretch: condensed; /* 使用压缩字体，使字母更窄 */
+        }
+        .scroll-content { 
+            padding: 25px 20px; 
+            overflow-y: auto; 
+            max-height: calc(100vh - 200px); 
+        }
+        .time-box { 
+            background: #2c3e50; 
+            color: white; 
+            padding: 10px; /* 修改：从5px增加到10px，高度增加5px */
+            text-align: center; 
+            font-size: 24px; 
+            font-weight: 600; 
+            border-radius: 8px; 
+            margin-top: 10px; 
+            margin-bottom: 0px; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
+            letter-spacing: 1px; 
+            height: auto; /* 确保高度自适应内容 */
+            min-height: 45px; /* 确保最小高度 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qr-section { 
+            text-align: center; 
+            margin: 10px 0 0 0; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 6px; 
+        }
+        .qr-box { 
+            width: 200px; 
+            height: 200px; 
+            margin: 0 auto; 
+            background: white; 
+            border: none; 
+            border-radius: 4px; 
+            display: grid; 
+            grid-template-columns: repeat(53, 1fr); 
+            grid-template-rows: repeat(53, 1fr); 
+            gap: 0; 
+            padding: 0; 
+        }
+        .qr-box div { 
+            width: 100%; 
+            height: 100%; 
+            background-color: #128212; 
+            border-radius: 0; 
+        }
+        .qr-box div.white { background-color: white; }
+        .qr-box div.black { background-color: #128212; }
+        .qr-box div.finder { background-color: #128212; }
+        .qr-box div.finder-inner { background-color: white; }
+        .qr-box div.finder-center { background-color: #128212; }
+        .qr-box div.alignment { background-color: #128212; }
+        .qr-box div.alignment-inner { background-color: white; }
+        .qr-box div.alignment-center { background-color: #128212; }
+        .qr-box div.timing { background-color: #128212; }
+        .info-label { 
+            color: #ff0000; 
+            font-weight: 900; 
+            margin: 10px 0; 
+            text-align: center; 
+            font-size: 20px; 
+            letter-spacing: 0.5px; 
+        }
+        .info-label .plate { 
+            color: #ff0000; 
+            font-weight: 700; 
+        }
+        .divider { 
+            border-top: 1px dotted #ccc; 
+            margin: 18px 0; 
+        }
+        .user-section { 
+            text-align: center; 
+            margin: 20px 0; 
+        }
+        .user-title { 
+            color: #0d562a; 
+            font-weight: 700; 
+            font-size: 23px; 
+            margin: 15px 0; 
+            position: relative; 
+            padding: 0 0 10px 0; 
+        }
+        .user-title::before { 
+            content: ''; 
+            position: absolute; 
+            left: 15%; 
+            top: 50%; 
+            width: 20%; 
+            height: 2px; 
+            background: #0d562a; 
+        }
+        .user-title::after { 
+            content: ''; 
+            position: absolute; 
+            right: 15%; 
+            top: 50%; 
+            width: 20%; 
+            height: 2px; 
+            background: #0d562a; 
+        }
+        .user-field { 
+            display: flex; 
+            justify-content: flex-start; 
+            gap: 25px; 
+            margin: 10px 0; 
+            font-size: 15px; 
+            color: #0d562a; 
+            padding-left: 40px; 
+        }
+        .field-label { 
+            font-weight: 400; 
+            color: #0d562a; 
+            min-width: 45px; 
+            text-align: left; 
+        }
+        .field-value { 
+            text-align: left; 
+            min-width: 80px; 
+            color: #0d562a; 
+        }
+        .tips-section { 
+            background: white; 
+            border-left: none; 
+            padding: 12px; 
+            margin: 20px 0; 
+            border-radius: 4px; 
+            text-align: center; 
+        }
+        .tips-title { 
+            color: #ff0000; 
+            font-weight: 400; 
+            margin-bottom: 6px; 
+            font-size: 14px; 
+        }
+        .tips-text { 
+            color: #ff0000; 
+            font-weight: 700; 
+            font-size: 14px; 
+            line-height: 1.6; 
+        }
+        .tips-text-light { 
+            color: #ff0000; 
+            font-weight: 400; 
+            font-size: 14px; 
+            line-height: 1.6; 
+        }
+        .footer-warning { 
+            color: #ff0000; 
+            font-weight: 400; 
+            text-align: center; 
+            margin-top: 15px; 
+            font-size: 14px; 
+            padding: 8px; 
+            background: white; 
+            border-radius: 3px; 
+            line-height: 1.5; 
+        }
+        
+        /* 手机屏幕适配 */
+        @media (max-width: 768px) {
+            body { padding: 0; }
+            .container { 
+                max-width: 100%; 
+                border-radius: 0 0 8px 8px;
+            }
+            .header { 
+                min-height: 160px; /* 调整高度 */
+            }
+            .header-top { 
+                padding: 10px 15px 0 15px; 
+                font-size: 14px; 
+                height: 40px; /* 调整顶部区域高度 */
+            }
+            .logo-school { 
+                padding: 0 15px; /* 移除底部padding */
+                gap: 10px; 
+                height: 120px; /* 调整logo区域高度：160px - 40px */
+                top: 40px; /* 调整顶部位置 */
+            }
+            .logo { 
+                width: 60px; 
+                height: 60px; 
+            }
+            .bit-logo-full {
+                max-height: 38px; /* 调整校徽图片高度 */
+            }
+            .zhuhai-info {
+                margin-left: 3px; /* 在移动端也保持较小间距 */
+                margin-bottom: 0.5px; /* 调整移动端底部间距 */
+            }
+            .zhuhai-chinese {
+                font-size: 18px; /* 调整字体大小 */
+            }
+            .zhuhai-english {
+                font-size: 9px; /* 调整英文字体大小 */
+                filter: blur(0.08px) contrast(0.92) brightness(1.08); /* 移动端调整模糊度 */
+                transform: scale(0.98) translateX(-0.2px) translateY(-0.8px); /* 移动端调整位置 */
+                font-weight: 300; /* 保持细字体 */
+                letter-spacing: 0.4px; /* 移动端减少字间距 */
+            }
+            .scroll-content { 
+                padding: 20px 15px; 
+            }
+            .time-box { 
+                font-size: 20px; 
+                padding: 8px; /* 修改：从4px增加到8px */
+                min-height: 40px; /* 确保最小高度 */
+            }
+            .qr-section { 
+                margin: 8px 0 0 0; 
+                padding: 15px; 
+            }
+            .qr-box { 
+                width: 160px; 
+                height: 160px; 
+            }
+            .info-label { 
+                font-size: 14px; 
+                margin: 8px 0; 
+            }
+            .user-title { 
+                font-size: 16px; 
+            }
+            .user-field { 
+                font-size: 13px; 
+                gap: 15px; 
+                padding-left: 20px; 
+            }
+            .divider { 
+                margin: 12px 0; 
+            }
+            .user-section { 
+                margin: 15px 0; 
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body { padding: 0; }
+            .header { 
+                min-height: 140px; /* 调整高度 */
+            }
+            .header-top { 
+                padding: 8px 10px 0 10px; 
+                font-size: 12px; 
+                height: 35px; /* 调整顶部区域高度 */
+            }
+            .logo-school { 
+                padding: 0 10px; /* 移除底部padding */
+                gap: 8px; 
+                height: 105px; /* 调整logo区域高度：140px - 35px */
+                top: 35px; /* 调整顶部位置 */
+            }
+            .logo { 
+                width: 50px; 
+                height: 50px; 
+            }
+            .bit-logo-full {
+                max-height: 32px; /* 调整校徽图片高度 */
+            }
+            .zhuhai-info {
+                margin-left: 2px; /* 在更小的屏幕上保持较小间距 */
+                margin-bottom: 0.3px; /* 进一步减少小屏幕底部间距 */
+            }
+            .zhuhai-chinese {
+                font-size: 16px; /* 调整字体大小 */
+            }
+            .zhuhai-english {
+                font-size: 8px; /* 调整英文字体大小 */
+                filter: blur(0.06px) contrast(0.92) brightness(1.08); /* 小屏幕调整模糊度 */
+                transform: scale(0.99) translateX(-0.1px) translateY(-0.6px); /* 小屏幕调整位置 */
+                font-weight: 300; /* 保持细字体 */
+                letter-spacing: 0.3px; /* 小屏幕进一步减少字间距 */
+            }
+            .scroll-content { 
+                padding: 15px 10px; 
+            }
+            .time-box { 
+                font-size: 18px; 
+                padding: 7px; /* 修改：从3px增加到7px */
+                min-height: 35px; /* 确保最小高度 */
+            }
+            .qr-section { 
+                margin: 5px 0 0 0; 
+                padding: 10px; 
+            }
+            .qr-box { 
+                width: 140px; 
+                height: 140px; 
+            }
+            .info-label { 
+                font-size: 12px; 
+                margin: 6px 0; 
+            }
+            .user-title { 
+                font-size: 14px; 
+            }
+            .user-field { 
+                font-size: 12px; 
+                gap: 12px; 
+                padding-left: 15px; 
+            }
+            .divider { 
+                margin: 10px 0; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <span>←</span>
+                <span class="header-title">北理珠通行码</span>
+                <span>⋯</span>
+            </div>
+            <div class="logo-school">
+                <!-- 北京理工大学官方校徽（圆形） -->
+                <div class="logo">
+                    <img src="https://www.bit.edu.cn/images/gb20190805/logo_01.png" class="logo-img" alt="北京理工大学校徽">
+                </div>
+                <div class="school-info">
+                    <!-- 北京理工大学中文图片 + (珠海)中文文字 -->
+                    <div class="school-main-container">
+                        <!-- 北京理工大学中文部分（校徽图片） -->
+                        <img src="https://www.bit.edu.cn/images/gb20190805/logo_02.png" class="bit-logo-full" alt="北京理工大学校徽完整版">
+                        <!-- 珠海中文部分 -->
+                        <div class="zhuhai-info">
+                            <div class="zhuhai-chinese">(珠海)</div>
+                            <div class="zhuhai-english">ZHUHAI</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-content">
+            <div class="time-box" id="timeDisplay">2026-01-22 17:35:35</div>
+
+            <div class="qr-section">
+                <div class="qr-box" id="qrcode"></div>
+            </div>
+
+            <div class="info-label">
+                申请人: 詹平方 (校友)  &nbsp;&nbsp;&nbsp;&nbsp;车牌: <span class="plate">粤CDN6616</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="user-section">
+                <div class="user-title">校友</div>
+                <div class="user-field">
+                    <span class="field-label">姓名:</span>
+                    <span class="field-value">詹平方</span>
+                </div>
+                <div class="user-field">
+                    <span class="field-label">性别:</span>
+                    <span class="field-value">男</span>
+                </div>
+                <div class="user-field">
+                    <span class="field-label">身份证:</span>
+                    <span class="field-value">440************78x</span>
+                </div>
+            </div>
+
+            <div class="tips-section">
+                <div class="tips-title">进校时</div>
+                <div class="tips-text">请出示 证件 及 本通行码</div>
+                <div class="tips-text-light">以便门卫核对身份</div>
+            </div>
+
+            <div class="footer-warning">
+                **通行码仅限本人使用，转借将取消人校资格！
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateRealisticQR() {
+            const qrBox = document.getElementById('qrcode');
+            qrBox.innerHTML = '';
+            
+            const size = 53;
+            const finderSize = 7;
+            
+            // 创建所有单元格
+            for (let i = 0; i < size * size; i++) {
+                const div = document.createElement('div');
+                div.classList.add('white');
+                qrBox.appendChild(div);
+            }
+            
+            // 获取所有单元格
+            const cells = qrBox.querySelectorAll('div');
+            
+            // 绘制三个定位图案（左上、右上、左下）
+            drawFinderPattern(0, 0, cells, size);
+            drawFinderPattern(size - finderSize, 0, cells, size); // 右上
+            drawFinderPattern(0, size - finderSize, cells, size); // 左下
+            
+            // 绘制时序图案（左上到右上，左上到左下）
+            drawTimingPattern(cells, size);
+            
+            // 绘制更密集、更碎的数据点
+            drawVeryDenseAndFragmentedData(cells, size);
+            
+            // 绘制多个对齐图案，增加真实感
+            drawAlignmentPattern(26, 26, cells, size); // 中心对齐图案
+            drawAlignmentPattern(17, 17, cells, size); // 左上区域
+            drawAlignmentPattern(17, 36, cells, size); // 左下区域
+            drawAlignmentPattern(36, 17, cells, size); // 右上区域
+            drawAlignmentPattern(36, 36, cells, size); // 右下区域
+            
+            // 添加额外的细小数据点
+            addTinyDataFragments(cells, size);
+        }
+        
+        function drawFinderPattern(startX, startY, cells, gridSize) {
+            const finderSize = 7;
+            
+            // 定位图案的7x7模块
+            for (let y = 0; y < finderSize; y++) {
+                for (let x = 0; x < finderSize; x++) {
+                    const index = (startY + y) * gridSize + (startX + x);
+                    if (index < cells.length) {
+                        // 外边框（绿色）
+                        if (y === 0 || y === finderSize - 1 || x === 0 || x === finderSize - 1) {
+                            cells[index].classList.remove('white');
+                            cells[index].classList.add('finder');
+                        }
+                        // 内边框（白色）
+                        else if (y === 1 || y === finderSize - 2 || x === 1 || x === finderSize - 2) {
+                            cells[index].classList.remove('finder');
+                            cells[index].classList.add('finder-inner');
+                        }
+                        // 中心3x3（绿色）
+                        else if (y >= 2 && y <= 4 && x >= 2 && x <= 4) {
+                            cells[index].classList.remove('finder-inner');
+                            cells[index].classList.add('finder-center');
+                        }
+                        // 中心点（绿色）
+                        else if (y === 3 && x === 3) {
+                            cells[index].classList.remove('finder-center');
+                            cells[index].classList.add('finder');
+                        }
+                    }
+                }
+            }
+        }
+        
+        function drawAlignmentPattern(centerX, centerY, cells, gridSize) {
+            const alignmentSize = 5;
+            
+            // 确保坐标在范围内
+            if (centerX < 2 || centerX >= gridSize - alignmentSize + 2 || 
+                centerY < 2 || centerY >= gridSize - alignmentSize + 2) {
+                return;
+            }
+            
+            for (let y = 0; y < alignmentSize; y++) {
+                for (let x = 0; x < alignmentSize; x++) {
+                    const index = (centerY + y) * gridSize + (centerX + x);
+                    if (index < cells.length) {
+                        // 跳过已经绘制的区域（定位图案和时序图案优先）
+                        if (cells[index].classList.contains('finder') || 
+                            cells[index].classList.contains('finder-inner') ||
+                            cells[index].classList.contains('finder-center') ||
+                            cells[index].classList.contains('timing')) {
+                            continue;
+                        }
+                        
+                        // 外边框（绿色）
+                        if (y === 0 || y === alignmentSize - 1 || x === 0 || x === alignmentSize - 1) {
+                            cells[index].classList.remove('white');
+                            cells[index].classList.add('alignment');
+                        }
+                        // 中心点（绿色）
+                        else if (y === 2 && x === 2) {
+                            cells[index].classList.remove('white');
+                            cells[index].classList.add('alignment-center');
+                        }
+                        // 内边框（白色）
+                        else {
+                            cells[index].classList.remove('white');
+                            cells[index].classList.remove('alignment');
+                            cells[index].classList.add('alignment-inner');
+                        }
+                    }
+                }
+            }
+        }
+        
+        function drawTimingPattern(cells, gridSize) {
+            // 水平时序图案（第6行，从第8列到第45列）
+            for (let x = 8; x < gridSize - 8; x++) {
+                const index = 6 * gridSize + x;
+                if (index < cells.length && !cells[index].classList.contains('finder')) {
+                    cells[index].classList.remove('white');
+                    cells[index].classList.add('timing');
+                    
+                    // 绿白相间
+                    if (x % 2 === 0) {
+                        cells[index].classList.remove('timing');
+                        cells[index].classList.add('white');
+                    } else {
+                        cells[index].classList.add('black');
+                    }
+                }
+            }
+            
+            // 垂直时序图案（第6列，从第8行到第45行）
+            for (let y = 8; y < gridSize - 8; y++) {
+                const index = y * gridSize + 6;
+                if (index < cells.length && !cells[index].classList.contains('finder')) {
+                    cells[index].classList.remove('white');
+                    cells[index].classList.add('timing');
+                    
+                    // 绿白相间
+                    if (y % 2 === 0) {
+                        cells[index].classList.remove('timing');
+                        cells[index].classList.add('white');
+                    } else {
+                        cells[index].classList.add('black');
+                    }
+                }
+            }
+        }
+        
+        function drawVeryDenseAndFragmentedData(cells, gridSize) {
+            // 使用更复杂的算法生成更碎、更密集的数据点
+            for (let i = 0; i < cells.length; i++) {
+                const y = Math.floor(i / gridSize);
+                const x = i % gridSize;
+                
+                // 跳过定位图案区域
+                if ((x < 9 && y < 9) || // 左上
+                    (x >= gridSize - 8 && y < 9) || // 右上
+                    (x < 9 && y >= gridSize - 8)) { // 左下
+                    continue;
+                }
+                
+                // 跳过时序图案
+                if (y === 6 || x === 6) {
+                    continue;
+                }
+                
+                // 跳过对齐图案区域
+                const alignmentPatterns = [
+                    {x: 26, y: 26},
+                    {x: 17, y: 17},
+                    {x: 17, y: 36},
+                    {x: 36, y: 17},
+                    {x: 36, y: 36}
+                ];
+                
+                let inAlignment = false;
+                for (const pattern of alignmentPatterns) {
+                    if (x >= pattern.x - 2 && x <= pattern.x + 2 && 
+                        y >= pattern.y - 2 && y <= pattern.y + 2) {
+                        inAlignment = true;
+                        break;
+                    }
+                }
+                
+                if (inAlignment) {
+                    continue;
+                }
+                
+                // 使用更复杂的密度函数，产生更碎的效果
+                let density = 0;
+                
+                // 区域密度函数 - 产生更随机的分布
+                const region1 = (x > 12 && x < 40 && y > 12 && y < 40);
+                const region2 = (x % 3 === 0 && y % 3 === 0);
+                const region3 = (x % 4 === 0 || y % 4 === 0);
+                const region4 = (x + y) % 5 === 0;
+                const region5 = (x * y) % 7 < 3;
+                
+                // 基础密度（再降低一点点）
+                density = 0.55; // 从0.58降低到0.55
+                
+                // 根据不同区域增加密度，产生碎片化效果（再微调）
+                if (region1) density += 0.10; // 从0.12降低到0.10
+                if (region2) density += 0.04; // 从0.05降低到0.04
+                if (region3) density -= 0.02; // 从-0.03改为-0.02
+                if (region4) density += 0.08; // 从0.09降低到0.08
+                if (region5) density -= 0.03; // 从-0.04改为-0.03
+                
+                // 确保密度在合理范围内
+                density = Math.max(0.43, Math.min(0.72, density)); // 调整范围
+                
+                // 添加一些完全随机的扰动，使数据更碎
+                const randomFactor = Math.random() * 0.18 - 0.09; // 再减小扰动范围
+                density += randomFactor;
+                
+                // 根据最终密度设置数据点
+                if (Math.random() < density) {
+                    cells[i].classList.remove('white');
+                    cells[i].classList.add('black');
+                }
+            }
+        }
+        
+        function addTinyDataFragments(cells, gridSize) {
+            // 添加极小的数据片段，增加细节和碎片感
+            for (let i = 0; i < cells.length; i++) {
+                const y = Math.floor(i / gridSize);
+                const x = i % gridSize;
+                
+                // 只在空白区域添加
+                if (cells[i].classList.contains('white')) {
+                    // 跳过关键区域
+                    if ((x < 10 && y < 10) || 
+                        (x >= gridSize - 9 && y < 10) || 
+                        (x < 10 && y >= gridSize - 9) ||
+                        y === 6 || x === 6) {
+                        continue;
+                    }
+                    
+                    // 使用复杂的模式判断是否添加小点
+                    const pattern1 = (x % 2 === 1 && y % 2 === 1);
+                    const pattern2 = (x % 3 === 2 || y % 3 === 2);
+                    const pattern3 = (x + y) % 4 === 0;
+                    const pattern4 = (x * y) % 11 < 3;
+                    
+                    // 随机选择模式
+                    const patterns = [pattern1, pattern2, pattern3, pattern4];
+                    const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+                    
+                    // 再降低添加额外数据点的概率
+                    if (randomPattern && Math.random() < 0.15) { // 从0.2降低到0.15
+                        cells[i].classList.remove('white');
+                        cells[i].classList.add('black');
+                    }
+                }
+            }
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('timeDisplay').textContent = timeString;
+        }
+
+        // 初始化
+        generateRealisticQR();
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // 添加一些随机变化，使二维码看起来是动态的
+        setInterval(() => {
+            const qrBox = document.getElementById('qrcode');
+            const cells = qrBox.querySelectorAll('div');
+            
+            // 随机改变几个非定位图案的单元格
+            for (let i = 0; i < 4; i++) {
+                const randomCell = Math.floor(Math.random() * cells.length);
+                const cell = cells[randomCell];
+                
+                // 确保不是定位图案或时序图案
+                if (!cell.classList.contains('finder') && 
+                    !cell.classList.contains('finder-inner') &&
+                    !cell.classList.contains('finder-center') &&
+                    !cell.classList.contains('timing') &&
+                    !cell.classList.contains('alignment') &&
+                    !cell.classList.contains('alignment-inner') &&
+                    !cell.classList.contains('alignment-center')) {
+                    
+                    if (cell.classList.contains('black')) {
+                        cell.classList.remove('black');
+                        cell.classList.add('white');
+                    } else if (cell.classList.contains('white')) {
+                        cell.classList.remove('white');
+                        cell.classList.add('black');
+                    }
+                }
+            }
+        }, 4000);
+    </script>
+</body>
+</html>
