@@ -23,6 +23,25 @@
             overflow: hidden; 
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); 
             margin: 0 auto; /* 确保居中 */
+            /* 为白色主体部分添加左右绿色边框 */
+            position: relative;
+        }
+        /* 创建左右绿色边框效果 - 使用伪元素 */
+        .container::before,
+        .container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 15px;
+            background-color: #0d562a;
+            z-index: 1;
+        }
+        .container::before {
+            left: 0;
+        }
+        .container::after {
+            right: 0;
         }
         .header { 
             background: linear-gradient(to bottom, #0076ff 0%, #0076ff 35%, #0d562a 35%, #0d562a 100%); 
@@ -32,6 +51,17 @@
             flex-direction: column; /* 垂直排列 */
             min-height: 180px; /* 固定高度 */
             position: relative; /* 为子元素定位提供参考 */
+            /* 让header覆盖边框区域，但内容在安全区内 */
+            z-index: 2; /* 确保在边框之上 */
+        }
+        /* 创建header的安全区域，内容不延伸到边框 */
+        .header-inner {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         .header-top { 
             display: flex; 
@@ -40,7 +70,7 @@
             margin-bottom: 0; /* 去掉下边距 */
             font-size: 16px; 
             font-weight: bold; 
-            padding: 15px 20px 0 20px; 
+            padding: 15px 20px 0 20px; /* 恢复原来的padding */
             height: 45px; /* 固定顶部区域高度 */
         }
         .header-title { font-size: 16px; font-weight: bold; }
@@ -49,12 +79,13 @@
             align-items: center; 
             justify-content: center; 
             gap: 15px; 
-            padding: 0 20px; /* 移除底部padding */
+            padding: 0 20px; /* 恢复原来的padding */
             height: 135px; /* 固定logo区域高度：180px - 45px */
             position: absolute; /* 绝对定位，便于居中控制 */
             top: 45px; /* 从header-top下面开始 */
             left: 0;
             right: 0;
+            z-index: 3; /* 确保在边框之上 */
         }
         .logo { 
             width: 70px; 
@@ -120,15 +151,16 @@
             line-height: 1.0; /* 进一步减小行高，使高度更紧凑 */
             margin-top: 0; /* 移除上边距 */
             margin-left: 0; /* 移除左移 */
-            filter: none; /* 移除模糊效果，在手机上显示清晰 */
+            /* 移除所有filter效果，使用text-shadow模拟轻微模糊效果 */
             text-rendering: optimizeLegibility; /* 优化文字清晰度 */
             -webkit-font-smoothing: antialiased; /* 抗锯齿 */
             -moz-osx-font-smoothing: grayscale; /* 字体平滑 */
             opacity: 1; /* 改为完全不透明 */
-            /* 右侧阴影效果 - 模拟图片中的立体感 */
+            /* 使用text-shadow模拟轻微模糊效果，而不是filter:blur */
             text-shadow: 
-                0.3px 0 0.2px rgba(0, 0, 0, 0.15), /* 右侧轻微黑色阴影 */
-                0 0 0.3px rgba(253, 253, 253, 0.6); /* 主文字发光效果 */
+                0.3px 0 0.2px rgba(0, 0, 0, 0.1), /* 右侧轻微黑色阴影 */
+                0 0 0.2px rgba(253, 253, 253, 0.8), /* 轻微发光效果，模拟模糊 */
+                0 0 0.1px rgba(253, 253, 253, 0.6); /* 更轻微的发光 */
             transform: scale(0.98) translateX(-0.3px) translateY(-4px); /* 上移3px */
             transform-origin: left bottom; /* 从左上角缩放 */
             display: inline-block; /* 确保transform生效 */
@@ -138,6 +170,10 @@
             padding: 25px 20px; 
             overflow-y: auto; 
             max-height: calc(100vh - 200px); 
+            position: relative;
+            z-index: 1; /* 确保在边框之上 */
+            /* 为白色内容区域添加内边距，避开边框 */
+            margin: 0 15px;
         }
         .time-box { 
             background: #2c3e50; 
@@ -296,23 +332,33 @@
             line-height: 1.5; 
         }
         
-        /* 手机屏幕适配 */
+        /* 手机屏幕适配 - 针对高DPI屏幕优化 */
         @media (max-width: 768px) {
-            body { padding: 0; }
+            body { 
+                padding: 0; 
+                background: #0d562a; /* 确保手机端背景也是绿色 */
+            }
             .container { 
                 max-width: 100%; 
                 border-radius: 0 0 8px 8px;
+                /* 保持边框 */
+                box-shadow: none; /* 手机端去掉阴影，更简洁 */
+            }
+            /* 保持边框效果 */
+            .container::before,
+            .container::after {
+                width: 15px;
             }
             .header { 
                 min-height: 160px; /* 调整高度 */
             }
             .header-top { 
-                padding: 10px 15px 0 15px; 
+                padding: 10px 15px 0 15px; /* 恢复原来的padding */
                 font-size: 14px; 
                 height: 40px; /* 调整顶部区域高度 */
             }
             .logo-school { 
-                padding: 0 15px; /* 移除底部padding */
+                padding: 0 15px; /* 恢复原来的padding */
                 gap: 10px; 
                 height: 120px; /* 调整logo区域高度：160px - 40px */
                 top: 40px; /* 调整顶部位置 */
@@ -333,14 +379,24 @@
             }
             .zhuhai-english {
                 font-size: 9px; /* 调整英文字体大小 */
-                filter: none; /* 移动端移除模糊效果 */
+                /* 移动端使用更清晰的渲染 */
+                text-shadow: 
+                    0.2px 0 0.1px rgba(0, 0, 0, 0.08), /* 更轻微的右侧阴影 */
+                    0 0 0.15px rgba(253, 253, 253, 0.9), /* 轻微发光效果 */
+                    0 0 0.05px rgba(253, 253, 253, 0.7); /* 更轻微的发光 */
                 transform: scale(0.98) translateX(-0.2px) translateY(-0.8px); /* 移动端调整位置 */
                 font-weight: 200; /* 保持细字体 */
                 letter-spacing: 0.4px; /* 移动端减少字间距 */
                 opacity: 1; /* 移动端完全不透明 */
+                /* 移动端强制清晰渲染 */
+                -webkit-font-smoothing: subpixel-antialiased !important;
+                -moz-osx-font-smoothing: auto !important;
+                text-rendering: geometricPrecision !important;
             }
             .scroll-content { 
                 padding: 20px 15px; 
+                margin: 0 15px; /* 保持内边距，避开边框 */
+                max-height: calc(100vh - 180px); /* 调整高度 */
             }
             .time-box { 
                 font-size: 20px; 
@@ -375,18 +431,42 @@
             }
         }
         
+        /* 小屏幕手机适配 */
+        @media (max-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
+            /* 针对高DPI手机屏幕优化 */
+            .zhuhai-english {
+                font-size: 8px; /* 调整英文字体大小 */
+                /* 在高DPI屏幕上使用更精确的阴影 */
+                text-shadow: 
+                    0.15px 0 0.08px rgba(0, 0, 0, 0.06),
+                    0 0 0.1px rgba(253, 253, 253, 0.95),
+                    0 0 0.03px rgba(253, 253, 253, 0.8);
+                transform: scale(0.99) translateX(-0.1px) translateY(-0.6px); /* 小屏幕调整位置 */
+                font-weight: 200; /* 保持细字体 */
+                letter-spacing: 0.3px; /* 小屏幕进一步减少字间距 */
+                opacity: 1; /* 小屏幕完全不透明 */
+                /* 强制最清晰的渲染 */
+                -webkit-font-smoothing: subpixel-antialiased !important;
+                image-rendering: -webkit-optimize-contrast !important;
+                image-rendering: crisp-edges !important;
+            }
+        }
+        
         @media (max-width: 480px) {
-            body { padding: 0; }
+            body { 
+                padding: 0; 
+                background: #0d562a; /* 确保小屏幕背景也是绿色 */
+            }
             .header { 
                 min-height: 140px; /* 调整高度 */
             }
             .header-top { 
-                padding: 8px 10px 0 10px; 
+                padding: 8px 10px 0 10px; /* 恢复原来的padding */
                 font-size: 12px; 
                 height: 35px; /* 调整顶部区域高度 */
             }
             .logo-school { 
-                padding: 0 10px; /* 移除底部padding */
+                padding: 0 10px; /* 恢复原来的padding */
                 gap: 8px; 
                 height: 105px; /* 调整logo区域高度：140px - 35px */
                 top: 35px; /* 调整顶部位置 */
@@ -407,7 +487,11 @@
             }
             .zhuhai-english {
                 font-size: 8px; /* 调整英文字体大小 */
-                filter: none; /* 小屏幕移除模糊效果 */
+                /* 使用轻微阴影而不是模糊效果 */
+                text-shadow: 
+                    0.2px 0 0.1px rgba(0, 0, 0, 0.06),
+                    0 0 0.12px rgba(253, 253, 253, 0.92),
+                    0 0 0.04px rgba(253, 253, 253, 0.75);
                 transform: scale(0.99) translateX(-0.1px) translateY(-0.6px); /* 小屏幕调整位置 */
                 font-weight: 200; /* 保持细字体 */
                 letter-spacing: 0.3px; /* 小屏幕进一步减少字间距 */
@@ -415,6 +499,8 @@
             }
             .scroll-content { 
                 padding: 15px 10px; 
+                margin: 0 15px; /* 保持内边距，避开边框 */
+                max-height: calc(100vh - 160px); /* 调整高度 */
             }
             .time-box { 
                 font-size: 18px; 
@@ -443,6 +529,24 @@
             }
             .divider { 
                 margin: 10px 0; 
+            }
+        }
+        
+        /* 专门针对iOS Safari的优化 */
+        @supports (-webkit-touch-callout: none) {
+            .zhuhai-english {
+                /* iOS上使用特定的清晰渲染设置 */
+                -webkit-font-smoothing: subpixel-antialiased;
+                text-rendering: optimizeLegibility;
+            }
+        }
+        
+        /* 针对Android Chrome的优化 */
+        @media (-webkit-min-device-pixel-ratio: 1.5) {
+            .zhuhai-english {
+                /* 高DPI设备上使用更清晰的设置 */
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
             }
         }
     </style>
