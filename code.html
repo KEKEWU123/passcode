@@ -14,6 +14,17 @@
             justify-content: center; 
             align-items: flex-start; /* 改为顶部对齐 */
             padding: 0; /* 去掉所有padding */
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: #0076ff;
+            z-index: 0;
         }
         .container { 
             width: calc(100% - 40px); 
@@ -25,6 +36,8 @@
             margin: 0 auto; /* 确保居中 */
             /* 为白色主体部分添加左右绿色边框 */
             position: relative;
+            z-index: 1;
+            margin-top: 50px;
         }
         /* 创建左右绿色边框效果 - 使用伪元素 */
         .container::before,
@@ -146,7 +159,7 @@
             font-size: 10px; /* 保持合适的大小 */
             letter-spacing: 0.5px; /* 减少字间距，使更紧凑 */
             font-family: 'Helvetica', 'Arial Narrow', Arial, sans-serif; /* 使用Helvetica，这是更细的字体 */
-            font-weight: 180; /* 改为200，更瘦的字体 */
+            font-weight: 165; /* 改为200，更瘦的字体 */
             color: #fdfdfd; /* 指定的浅灰色 */
             line-height: 1.0; /* 进一步减小行高，使高度更紧凑 */
             margin-top: 0; /* 移除上边距 */
@@ -159,7 +172,7 @@
             /* 使用text-shadow模拟轻微模糊效果，而不是filter:blur */
             text-shadow: 
                 0.3px 0 0.2px rgba(0, 0, 0, 0.1), /* 右侧轻微黑色阴影 */
-                0 0 0.2px rgba(253, 253, 253, 0.8), /* 轻微发光效果，模拟模糊 */
+                0 0 0.2px rgba(253, 253, 253, 0.719), /* 轻微发光效果，模拟模糊 */
                 0 0 0.1px rgba(253, 253, 253, 0.6); /* 更轻微的发光 */
             transform: scale(0.98) translateX(-0.3px) translateY(-4px); /* 上移3px */
             transform-origin: left bottom; /* 从左上角缩放 */
