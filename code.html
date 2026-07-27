@@ -1,894 +1,683 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>北理珠通行码</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: '微软雅黑', Arial, sans-serif; 
-            background-color: #0076ff;
-            min-height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: flex-start;
-            padding: 0;
-            position: relative;
-            padding-top: 50px;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 50px;
-            background-color: #0076ff;
-            z-index: 0;
-        }
-        .container { 
-            width: calc(100% - 20px); 
-            max-width: 480px; 
-            background: white; 
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); 
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-            margin-top: 0;
-            margin-bottom: 50px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-            flex-direction: column;
-        }
-        .container::before,
-        .container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 15px;
-            background-color: #0d562a;
-            z-index: 1;
-        }
-        .container::before {
-            left: 0;
-            border-radius: 12px 0 0 12px;
-        }
-        .container::after {
-            right: 0;
-            border-radius: 0 12px 12px 0;
-        }
-        .header { 
-            background: linear-gradient(to bottom, #0076ff 0%, #0076ff 35%, #0d562a 35%, #0d562a 100%); 
-            color: white; 
-            padding: 0; 
-            display: flex;
-            flex-direction: column;
-            min-height: 180px;
-            position: relative;
-            z-index: 2;
-            width: calc(100% + 20px);
-            margin-left: -10px;
-            margin-top: -12px;
-            flex-shrink: 0;
-            border-radius: 12px 12px 0 0;
-            overflow: hidden;
-        }
-        .header-top { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 0;
-            font-size: 16px; 
-            font-weight: bold; 
-            padding: 15px 20px 0 20px;
-            height: 45px;
-        }
-        .header-title { font-size: 16px; font-weight: bold; }
-        .logo-school { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 15px; 
-            padding: 0 20px;
-            height: 135px;
-            position: absolute;
-            top: 45px;
-            left: 0;
-            right: 0;
-            z-index: 3;
-        }
-        .logo { 
-            width: 70px; 
-            height: 70px; 
-            background: transparent;
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-shrink: 0; 
-            overflow: hidden;
-            border: none;
-        }
-        .logo-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            border-radius: 50%;
-            background-color: transparent;
-        }
-        .school-info { 
-            text-align: left; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center;
-        }
-        .school-main-container {
-            display: flex;
-            align-items: flex-end;
-            min-height: 50px;
-        }
-        .bit-logo-full {
-            max-height: 45px;
-            width: auto;
-            display: block;
-        }
-        .zhuhai-info {
-            margin-left: 4px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            margin-bottom: 1px;
-        }
-        .zhuhai-english-top {
-            font-size: 8px;
-            letter-spacing: 0.3px;
-            font-family: 'Helvetica', 'Arial Narrow', Arial, sans-serif;
-            font-weight: 155;
-            color: #fdfdfd;
-            line-height: 0.9;
-            margin-bottom: 2px;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            opacity: 1;
-            text-shadow: 
-                0.3px 0 0.2px rgba(0, 0, 0, 0.1),
-                0 0 0.2px rgba(253, 253, 253, 0.719),
-                0 0 0.1px rgba(253, 253, 253, 0.6);
-            display: inline-block;
-            font-stretch: condensed;
-        }
-        .zhuhai-chinese {
-            font-family: "鸿雷板书简体", "STKaiti", "KaiTi", serif;
-            color: white;
-            font-size: 20px;
-            font-weight: 600;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-            letter-spacing: 1px;
-            line-height: 1.1;
-            margin-bottom: 0;
-        }
-        .zhuhai-english {
-            font-size: 10px;
-            letter-spacing: 0.5px;
-            font-family: 'Helvetica', 'Arial Narrow', Arial, sans-serif;
-            font-weight: 155;
-            color: #fdfdfd;
-            line-height: 1.0;
-            margin-top: 0;
-            margin-left: 0;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            opacity: 1;
-            text-shadow: 
-                0.3px 0 0.2px rgba(0, 0, 0, 0.1),
-                0 0 0.2px rgba(253, 253, 253, 0.719),
-                0 0 0.1px rgba(253, 253, 253, 0.6);
-            transform: scale(0.98) translateX(-0.3px) translateY(-3px);
-            transform-origin: left bottom;
-            display: inline-block;
-            font-stretch: condensed;
-        }
-        .scroll-content { 
-            padding: 25px 20px; 
-            overflow-y: visible;
-            position: relative;
-            z-index: 1;
-            margin: 0 10px;
-            flex: 1;
-        }
-        .time-box { 
-            background: #2c3e50; 
-            color: white; 
-            padding: 10px; 
-            text-align: center; 
-            font-size: 28px; 
-            font-weight: 600; 
-            border-radius: 8px; 
-            margin-top: 10px; 
-            margin-bottom: 0px; 
-            font-family: 'Source Han Sans CN', 'Source Han Sans', '思源黑体', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
-            letter-spacing: 1px; 
-            height: auto; 
-            min-height: 53px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .qr-section { 
-            text-align: center; 
-            margin: 10px 0 0 0; 
-            padding: 20px; 
-            background: white; 
-            border-radius: 6px; 
-        }
-        .qr-box { 
-            width: 200px; 
-            height: 200px; 
-            margin: 0 auto; 
-            background: white; 
-            border: none; 
-            border-radius: 4px; 
-            display: grid; 
-            grid-template-columns: repeat(53, 1fr); 
-            grid-template-rows: repeat(53, 1fr); 
-            gap: 0; 
-            padding: 0; 
-        }
-        .qr-box div { 
-            width: 100%; 
-            height: 100%; 
-            background-color: #128212; 
-            border-radius: 0; 
-        }
-        .qr-box div.white { background-color: white; }
-        .qr-box div.black { background-color: #128212; }
-        .qr-box div.finder { background-color: #128212; }
-        .qr-box div.finder-inner { background-color: white; }
-        .qr-box div.finder-center { background-color: #128212; }
-        .qr-box div.alignment { background-color: #128212; }
-        .qr-box div.alignment-inner { background-color: white; }
-        .qr-box div.alignment-center { background-color: #128212; }
-        .qr-box div.timing { background-color: #128212; }
-        .info-label { 
-            color: #ff0000; 
-            font-weight: 900; 
-            margin: 10px 0; 
-            text-align: center; 
-            font-size: 24px; 
-            letter-spacing: 0.5px; 
-        }
-        .info-label .plate { 
-            color: #ff0000; 
-            font-weight: 700; 
-        }
-        .divider { 
-            border-top: 1px dotted #ccc; 
-            margin: 18px 0; 
-        }
-        .user-section { 
-            text-align: center; 
-            margin: 20px 0; 
-        }
-        .user-title { 
-            color: #0d562a; 
-            font-weight: 700; 
-            font-size: 23px; 
-            margin: 15px 0; 
-            position: relative; 
-            padding: 0 0 10px 0; 
-        }
-        .user-title::before { 
-            content: ''; 
-            position: absolute; 
-            left: 15%; 
-            top: 50%; 
-            width: 20%; 
-            height: 2px; 
-            background: #0d562a; 
-        }
-        .user-title::after { 
-            content: ''; 
-            position: absolute; 
-            right: 15%; 
-            top: 50%; 
-            width: 20%; 
-            height: 2px; 
-            background: #0d562a; 
-        }
-        .user-field { 
-            display: flex; 
-            justify-content: flex-start; 
-            gap: 25px; 
-            margin: 6px 0; 
-            font-size: 16px; 
-            color: #0d562a; 
-            padding-left: 40px; 
-        }
-        .field-label { 
-            font-weight: 400; 
-            color: #0d562a; 
-            min-width: 45px; 
-            text-align: left; 
-        }
-        .field-value { 
-            text-align: left; 
-            min-width: 80px; 
-            color: #0d562a; 
-        }
-        .tips-section { 
-            background: white; 
-            border-left: none; 
-            padding: 12px; 
-            margin: 20px 0; 
-            border-radius: 4px; 
-            text-align: center; 
-        }
-        .tips-title { 
-            color: #ff0000; 
-            font-weight: 400; 
-            margin-bottom: 6px; 
-            font-size: 14px; 
-        }
-        .tips-text { 
-            color: #ff0000; 
-            font-weight: 700; 
-            font-size: 14px; 
-            line-height: 1.6; 
-        }
-        .tips-text-light { 
-            color: #ff0000; 
-            font-weight: 400; 
-            font-size: 14px; 
-            line-height: 1.6; 
-        }
-        .footer-warning { 
-            color: #ff0000; 
-            font-weight: 400; 
-            text-align: center; 
-            margin-top: 15px; 
-            font-size: 14px; 
-            padding: 8px; 
-            background: white; 
-            border-radius: 3px; 
-            line-height: 1.5; 
-        }
-        
-        @media (max-width: 768px) {
-            body { 
-                padding: 0; 
-                background: #0d562a;
-            }
-            .container { 
-                width: 100%;
-                max-width: 100%; 
-                border-radius: 0 0 12px 12px;
-                box-shadow: none;
-                left: 0;
-                right: 0;
-                margin: 0;
-                margin-top: 50px;
-            }
-            .container::before,
-            .container::after {
-                width: 10px;
-            }
-            .container::before {
-                border-radius: 0;
-            }
-            .container::after {
-                border-radius: 0;
-            }
-            .header {
-                width: 100%;
-                margin-left: 0;
-            }
-            .header { 
-                min-height: 160px;
-            }
-            .header-top { 
-                padding: 10px 15px 0 15px;
-                font-size: 14px; 
-                height: 40px;
-            }
-            .logo-school { 
-                padding: 0 15px;
-                gap: 10px; 
-                height: 120px;
-                top: 40px;
-            }
-            .logo { 
-                width: 60px; 
-                height: 60px; 
-            }
-            .bit-logo-full {
-                max-height: 38px;
-            }
-            .zhuhai-info {
-                margin-left: 3px;
-                margin-bottom: 0.5px;
-            }
-            .zhuhai-chinese {
-                font-size: 18px;
-            }
-            .zhuhai-english-top {
-                font-size: 7px;
-            }
-            .zhuhai-english {
-                font-size: 9px;
-                text-shadow: 
-                    0.2px 0 0.1px rgba(0, 0, 0, 0.08),
-                    0 0 0.15px rgba(253, 253, 253, 0.9),
-                    0 0 0.05px rgba(253, 253, 253, 0.7);
-                transform: scale(0.98) translateX(-0.2px) translateY(-0.8px);
-                font-weight: 200;
-                letter-spacing: 0.4px;
-                opacity: 1;
-                -webkit-font-smoothing: subpixel-antialiased !important;
-                -moz-osx-font-smoothing: auto !important;
-                text-rendering: geometricPrecision !important;
-            }
-            .scroll-content { 
-                padding: 20px 15px; 
-                margin: 0 15px;
-                max-height: calc(100vh - 190px);
-            }
-            .time-box { 
-                font-size: 24px; 
-                padding: 8px;
-                min-height: 48px;
-            }
-            .qr-section { 
-                margin: 8px 0 0 0; 
-                padding: 15px; 
-            }
-            .qr-box { 
-                width: 160px; 
-                height: 160px; 
-            }
-            .info-label { 
-                font-size: 14px; 
-                margin: 8px 0; 
-            }
-            .user-title { 
-                font-size: 16px; 
-            }
-            .user-field { 
-                font-size: 13px; 
-                gap: 15px; 
-                padding-left: 20px; 
-            }
-            .divider { 
-                margin: 12px 0; 
-            }
-            .user-section { 
-                margin: 15px 0; 
-            }
-        }
-        
-        @media (max-width: 480px) {
-            body { 
-                padding: 0; 
-                background: #0d562a;
-            }
-            .container {
-                border-radius: 0 0 12px 12px;
-            }
-            .header { 
-                min-height: 140px;
-            }
-            .header-top { 
-                padding: 8px 10px 0 10px;
-                font-size: 12px; 
-                height: 35px;
-            }
-            .logo-school { 
-                padding: 0 10px;
-                gap: 8px; 
-                height: 105px;
-                top: 35px;
-            }
-            .logo { 
-                width: 50px; 
-                height: 50px; 
-            }
-            .bit-logo-full {
-                max-height: 32px;
-            }
-            .zhuhai-info {
-                margin-left: 2px;
-                margin-bottom: 0.3px;
-            }
-            .zhuhai-chinese {
-                font-size: 16px;
-            }
-            .zhuhai-english-top {
-                font-size: 6px;
-            }
-            .zhuhai-english {
-                font-size: 8px;
-                text-shadow: 
-                    0.2px 0 0.1px rgba(0, 0, 0, 0.06),
-                    0 0 0.12px rgba(253, 253, 253, 0.92),
-                    0 0 0.04px rgba(253, 253, 253, 0.75);
-                transform: scale(0.99) translateX(-0.1px) translateY(-0.6px);
-                font-weight: 200;
-                letter-spacing: 0.3px;
-                opacity: 1;
-            }
-            .scroll-content { 
-                padding: 15px 10px; 
-                margin: 0 15px;
-                max-height: calc(100vh - 175px);
-            }
-            .time-box { 
-                font-size: 22px; 
-                padding: 7px;
-                min-height: 43px;
-            }
-            .qr-section { 
-                margin: 5px 0 0 0; 
-                padding: 10px; 
-            }
-            .qr-box { 
-                width: 140px; 
-                height: 140px; 
-            }
-            .info-label { 
-                font-size: 12px; 
-                margin: 6px 0; 
-            }
-            .user-title { 
-                font-size: 14px; 
-            }
-            .user-field { 
-                font-size: 12px; 
-                gap: 12px; 
-                padding-left: 15px; 
-            }
-            .divider { 
-                margin: 10px 0; 
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#075c2e">
+  <title>北理珠通行码</title>
+  <style>
+    :root {
+      --green: #075c2e;
+      --qr-green: #13871b;
+      --red: #ff1111;
+      --ink: #304357;
+      --header-h: clamp(126px, 30.4vw, 180px);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; min-height: 100%; }
+
+    body {
+      min-height: 100svh;
+      overflow-x: hidden;
+      background: #064c28;
+      color: var(--green);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    button, input, select { font: inherit; }
+
+    .app {
+      position: relative;
+      isolation: isolate;
+      width: min(100%, 592px);
+      min-height: 100svh;
+      margin: 0 auto;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 52% 42%, rgba(12, 109, 55, .45), transparent 52%),
+        linear-gradient(135deg, #075c2e 0%, #07582c 55%, #064925 100%);
+    }
+
+    .network {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      opacity: .72;
+      pointer-events: none;
+    }
+
+    .brand-header {
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 clamp(18px, 7vw, 46px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(11px, 3.05vw, 18px);
+      width: 100%;
+      transform: translate(-8px, -4px);
+    }
+
+    .seal {
+      width: clamp(52px, 11.8vw, 70px);
+      height: clamp(52px, 11.8vw, 70px);
+      flex: 0 0 auto;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .brand-copy {
+      min-width: 0;
+      color: #fff;
+    }
+
+    .brand-name {
+      display: flex;
+      align-items: flex-end;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .bit-wordmark {
+      width: clamp(181px, 41.4vw, 245px);
+      height: clamp(35px, 7.25vw, 43px);
+      flex: 0 0 auto;
+      overflow: hidden;
+    }
+
+    .bit-wordmark img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transform: translateY(clamp(2px, .7vw, 4px));
+    }
+
+    .zhuhai-cn {
+      margin: 0 0 1px -7px;
+      font: 600 clamp(18px, 4.25vw, 25px)/1 "STKaiti", "KaiTi", "FZKai-Z03S", serif;
+      letter-spacing: -1.5px;
+      text-shadow: 0 0 .35px currentColor;
+    }
+
+    .brand-en {
+      margin-top: clamp(2px, .55vw, 3px);
+      font: 700 clamp(9px, 2.3vw, 13.6px)/1 "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+      letter-spacing: clamp(.2px, .09vw, .55px);
+      white-space: nowrap;
+      transform: scaleX(1.015);
+      transform-origin: left center;
+    }
+
+    .pass-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100svh - var(--header-h) - clamp(39px, 10.6vw, 63px));
+      margin: 0 clamp(14px, 3.72vw, 22px) clamp(39px, 10.6vw, 63px);
+      margin-right: clamp(22px, 6.08vw, 36px);
+      padding: clamp(29px, 7.6vw, 45px) clamp(15px, 2.55vw, 15px) clamp(31px, 7.8vw, 46px);
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #d8d8d8;
+      border-radius: 9px;
+      box-shadow: 0 0 10px rgba(255,255,255,.42), 0 3px 14px rgba(0,0,0,.22);
+    }
+
+    .time-box {
+      align-self: center;
+      width: calc(100% - clamp(30px, 8.45vw, 50px));
+      min-height: clamp(44px, 10.9vw, 65px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(5px, 1.2vw, 8px) 8px;
+      overflow: hidden;
+      border-radius: 7px;
+      background: var(--ink);
+      color: #fff;
+      font: 400 clamp(20px, 6.95vw, 41px)/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      letter-spacing: clamp(-1px, -.06vw, 0px);
+      white-space: nowrap;
+    }
+
+    .qr-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: clamp(23px, 5.1vw, 30px);
+    }
+
+    .qr-grid {
+      width: clamp(178px, 38vw, 225px);
+      aspect-ratio: 1;
+      display: grid;
+      grid-template-columns: repeat(53, 1fr);
+      grid-template-rows: repeat(53, 1fr);
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .qr-grid i { display: block; background: transparent; }
+    .qr-grid i.on { background: var(--qr-green); }
+
+    .summary {
+      margin: clamp(17px, 3.55vw, 21px) auto 0;
+      color: var(--red);
+      font-size: clamp(16px, 3.9vw, 23px);
+      font-weight: 800;
+      line-height: 1.35;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .divider {
+      margin: clamp(18px, 3.35vw, 20px) 0 0;
+      border: 0;
+      border-top: 1px dotted #9d9d9d;
+    }
+
+    .role-title {
+      display: grid;
+      grid-template-columns: minmax(70px, 135px) auto minmax(70px, 135px);
+      justify-content: center;
+      align-items: center;
+      gap: clamp(25px, 11.3vw, 67px);
+      margin: clamp(19px, 3.9vw, 23px) clamp(12px, 2.1vw, 12px) 0;
+      color: var(--green);
+      font-size: clamp(25px, 6.1vw, 36px);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .role-title::before, .role-title::after {
+      content: "";
+      height: 2px;
+      background: var(--green);
+    }
+
+    .details {
+      margin: clamp(45px, 9.7vw, 57px) clamp(15px, 2.4vw, 15px) 0;
+      font-size: clamp(16px, 3.7vw, 22px);
+      line-height: 1.78;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: clamp(73px, 13.4vw, 79px) 1fr;
+      white-space: nowrap;
+    }
+
+    #detailIdentity { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+
+    .notice {
+      margin-top: clamp(28px, 5.9vw, 35px);
+      color: var(--red);
+      text-align: center;
+      font-size: clamp(16px, 3.5vw, 21px);
+      line-height: 1.5;
+    }
+
+    .notice strong { font-weight: 800; }
+
+    .footer-warning {
+      margin: auto 0 0;
+      padding-top: clamp(36px, 7.5vw, 44px);
+      color: var(--red);
+      text-align: center;
+      font-size: clamp(14px, 3.3vw, 20px);
+      line-height: 1.45;
+      white-space: nowrap;
+    }
+
+    .edit-hint {
+      position: fixed;
+      z-index: 20;
+      left: 50%;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      max-width: calc(100vw - 32px);
+      padding: 9px 15px;
+      border-radius: 999px;
+      background: rgba(18, 34, 29, .88);
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.2;
+      white-space: nowrap;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .24s ease, transform .24s ease;
+    }
+
+    .edit-hint.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .editor {
+      position: fixed;
+      z-index: 30;
+      inset: 0;
+      display: grid;
+      place-items: end center;
+      padding: 18px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background: rgba(0,0,0,.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease, visibility .2s ease;
+    }
+
+    .editor.open { opacity: 1; visibility: visible; }
+
+    .editor-panel {
+      width: min(100%, 460px);
+      padding: 24px 20px calc(20px + env(safe-area-inset-bottom));
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.28);
+      transform: translateY(18px);
+      transition: transform .2s ease;
+    }
+
+    .editor.open .editor-panel { transform: translateY(0); }
+
+    .editor-title {
+      margin: 0 0 18px;
+      color: #173f2a;
+      font-size: 22px;
+      text-align: center;
+    }
+
+    .field { display: block; margin-top: 14px; }
+    .field span { display: block; margin-bottom: 7px; color: #345143; font-size: 14px; }
+
+    .field input, .field select {
+      width: 100%;
+      height: 46px;
+      padding: 0 13px;
+      border: 1px solid #c8d1cc;
+      border-radius: 8px;
+      outline: none;
+      background: #fff;
+      color: #173f2a;
+      font-size: 17px;
+    }
+
+    .field input:focus, .field select:focus {
+      border-color: #08703a;
+      box-shadow: 0 0 0 3px rgba(8,112,58,.12);
+    }
+
+    .form-actions { display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px; margin-top: 22px; }
+
+    .form-actions button {
+      height: 46px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .cancel-btn { background: #e9eeeb; color: #365044; }
+    .generate-btn { background: #08703a; color: #fff; }
+
+    @media (max-width: 410px) {
+      .brand-header { padding-inline: 15px; }
+      .brand { gap: 8px; }
+      .bit-wordmark { width: clamp(165px, 44.2vw, 181px); }
+      .zhuhai-cn { font-size: clamp(15px, 4.6vw, 18px); }
+      .brand-en { font-size: clamp(8px, 2.4vw, 9px); letter-spacing: .1px; }
+      .summary { font-size: clamp(12px, 3.55vw, 14px); letter-spacing: -.35px; }
+      .role-title { gap: 25px; margin-inline: 0; }
+      .details { line-height: 1.7; }
+    }
+
+    @media (max-width: 340px) {
+      .seal { width: 47px; height: 47px; }
+      .bit-wordmark { width: 153px; height: 32px; }
+      .zhuhai-cn { font-size: 14px; }
+      .brand-en { font-size: 7.4px; }
+      .time-box { font-size: 20.5px; letter-spacing: -.4px; }
+      .summary { font-size: 11.5px; }
+      .role-title { grid-template-columns: 1fr auto 1fr; gap: 14px; font-size: 22px; }
+      .details { font-size: 14px; }
+      #detailIdentity { font-size: 13px; }
+      .footer-warning { font-size: 10.5px; }
+    }
+
+    @media (min-width: 680px) {
+      body { padding-block: 22px; }
+      .app { min-height: calc(100svh - 44px); border-radius: 12px; box-shadow: 0 12px 45px rgba(0,0,0,.28); }
+      .pass-card { min-height: calc(100svh - 44px - var(--header-h) - 63px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .app { width: 100%; box-shadow: none; }
+      .editor, .edit-hint { display: none !important; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="header-top">
-                <span>←</span>
-                <span class="header-title">北理珠通行码</span>
-                <span>⋯</span>
+  <main class="app" id="app">
+    <svg class="network" viewBox="0 0 592 1191" preserveAspectRatio="none" aria-hidden="true">
+      <g fill="none" stroke="#008f84" stroke-width="1">
+        <path d="M33 100 L73 181 L1 938 L21 1030 L0 1119"/>
+        <path d="M33 100 L180 184 L304 244" opacity=".35"/>
+        <path d="M1 938 L103 919 L187 1000"/>
+        <path d="M21 1030 L102 920" opacity=".45"/>
+        <path d="M592 712 L531 816 L578 1057 L592 1110"/>
+        <path d="M531 816 L592 850" opacity=".45"/>
+        <path d="M578 1057 L507 1012" opacity=".55"/>
+      </g>
+      <g fill="#00b6bd">
+        <circle cx="33" cy="100" r="2.5"/><circle cx="1" cy="938" r="2.5"/>
+        <circle cx="21" cy="1030" r="4.5"/><circle cx="578" cy="1057" r="3"/>
+        <circle cx="531" cy="816" r="2.5"/><circle cx="592" cy="1110" r="2.5"/>
+      </g>
+    </svg>
+
+    <header class="brand-header">
+      <div class="brand" aria-label="北京理工大学（珠海）">
+        <img class="seal" src="https://www.bit.edu.cn/images/gb20190805/logo_01.png" alt="北京理工大学校徽">
+        <div class="brand-copy">
+          <div class="brand-name">
+            <div class="bit-wordmark">
+              <img src="https://www.bit.edu.cn/images/gb20190805/logo_02.png" alt="北京理工大学">
             </div>
-            <div class="logo-school">
-                <div class="logo">
-                    <img src="https://www.bit.edu.cn/images/gb20190805/logo_01.png" class="logo-img" alt="北京理工大学校徽">
-                </div>
-                <div class="school-info">
-                    <div class="school-main-container">
-                        <img src="https://www.bit.edu.cn/images/gb20190805/logo_02.png" class="bit-logo-full" alt="北京理工大学校徽完整版">
-                        <div class="zhuhai-info">
-                            <div class="zhuhai-chinese">(珠海)</div>
-                            <div class="zhuhai-english">ZHUHAI</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <span class="zhuhai-cn">（珠海）</span>
+          </div>
+          <div class="brand-en">BEIJING INSTITUTE OF TECHNOLOGY, ZHUHAI</div>
         </div>
+      </div>
+    </header>
 
-        <div class="scroll-content">
-            <div class="time-box" id="timeDisplay">2026-01-22 17:35:35</div>
+    <section class="pass-card" id="passCard" aria-label="校友通行码">
+      <time class="time-box" id="timeDisplay">2026-07-27 16:07:51</time>
 
-            <div class="qr-section">
-                <div class="qr-box" id="qrcode"></div>
-            </div>
+      <div class="qr-wrap" aria-label="动态通行二维码">
+        <div class="qr-grid" id="qrcode" role="img" aria-label="绿色动态通行二维码"></div>
+      </div>
 
-            <div class="info-label">
-                申请人: 詹平方 (校友)  &nbsp;&nbsp;&nbsp;&nbsp;车牌: <span class="plate">粤CDN6616</span>
-            </div>
+      <div class="summary">
+        申请人：<span id="summaryName">吴科儒</span>（校友）；车牌：<span id="summaryPlate">粤CDN6616</span>
+      </div>
 
-            <div class="divider"></div>
+      <hr class="divider">
 
-            <div class="user-section">
-                <div class="user-title">校友</div>
-                <div class="user-field">
-                    <span class="field-label">姓名:</span>
-                    <span class="field-value">詹平方</span>
-                </div>
-                <div class="user-field">
-                    <span class="field-label">性别:</span>
-                    <span class="field-value">男</span>
-                </div>
-                <div class="user-field">
-                    <span class="field-label">身份证:</span>
-                    <span class="field-value">440************78x</span>
-                </div>
-            </div>
+      <div class="role-title"><span>校友</span></div>
 
-            <div class="tips-section">
-                <div class="tips-title">进校时</div>
-                <div class="tips-text">请出示 证件 及 本通行码</div>
-                <div class="tips-text-light">以便门卫核对身份</div>
-            </div>
+      <div class="details">
+        <div class="detail-row"><span>姓名：</span><span id="detailName">吴科儒</span></div>
+        <div class="detail-row"><span>性别：</span><span id="detailGender">女</span></div>
+        <div class="detail-row"><span>身份证：</span><span id="detailIdentity">440882*********327</span></div>
+      </div>
 
-            <div class="footer-warning">
-                **通行码仅限本人使用，转借将取消人校资格！
-            </div>
-        </div>
-    </div>
+      <div class="notice">
+        <div>进校时</div>
+        <strong>请出示 证件 及 本通行码</strong>
+        <div>以便门卫核对身份</div>
+      </div>
 
-    <script>
-        function generateRealisticQR() {
-            const qrBox = document.getElementById('qrcode');
-            qrBox.innerHTML = '';
-            
-            const size = 53;
-            const finderSize = 7;
-            
-            for (let i = 0; i < size * size; i++) {
-                const div = document.createElement('div');
-                div.classList.add('white');
-                qrBox.appendChild(div);
-            }
-            
-            const cells = qrBox.querySelectorAll('div');
-            
-            drawFinderPattern(0, 0, cells, size);
-            drawFinderPattern(size - finderSize, 0, cells, size);
-            drawFinderPattern(0, size - finderSize, cells, size);
-            
-            drawTimingPattern(cells, size);
-            
-            drawVeryDenseAndFragmentedData(cells, size);
-            
-            drawAlignmentPattern(26, 26, cells, size);
-            drawAlignmentPattern(17, 17, cells, size);
-            drawAlignmentPattern(17, 36, cells, size);
-            drawAlignmentPattern(36, 17, cells, size);
-            drawAlignmentPattern(36, 36, cells, size);
-            
-            addTinyDataFragments(cells, size);
+      <div class="footer-warning">**通行码仅限本人使用，转借将取消入校资格！</div>
+    </section>
+  </main>
+
+  <div class="edit-hint" id="editHint" role="status">长按页面可修改通行信息</div>
+
+  <div class="editor" id="editor" aria-hidden="true">
+    <form class="editor-panel" id="editorForm">
+      <h2 class="editor-title">修改通行信息</h2>
+
+      <label class="field">
+        <span>申请人</span>
+        <input id="nameInput" name="name" type="text" maxlength="12" autocomplete="name" required>
+      </label>
+
+      <label class="field">
+        <span>性别</span>
+        <select id="genderInput" name="gender" required>
+          <option value="女">女</option>
+          <option value="男">男</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>车牌</span>
+        <input id="plateInput" name="plate" type="text" maxlength="12" inputmode="text" autocapitalize="characters" required>
+      </label>
+
+      <label class="field">
+        <span>身份证</span>
+        <input id="identityInput" name="identity" type="text" maxlength="24" inputmode="text" autocomplete="off" placeholder="支持完整号码或脱敏格式" required>
+      </label>
+
+      <div class="form-actions">
+        <button class="cancel-btn" id="cancelEdit" type="button">取消</button>
+        <button class="generate-btn" type="submit">生成通行码</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const defaults = { name: "吴科儒", gender: "女", plate: "粤CDN6616", identity: "440882*********327" };
+      const storageKey = "bit-zhuhai-pass-profile-v2";
+      const $ = (id) => document.getElementById(id);
+
+      const editor = $("editor");
+      const form = $("editorForm");
+      const nameInput = $("nameInput");
+      const genderInput = $("genderInput");
+      const plateInput = $("plateInput");
+      const identityInput = $("identityInput");
+      const hint = $("editHint");
+      const app = $("app");
+
+      function loadProfile() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(storageKey));
+          return saved && saved.name && saved.gender && saved.plate
+            ? { ...saved, identity: saved.identity || defaults.identity }
+            : defaults;
+        } catch (_) {
+          return defaults;
         }
-        
-        function drawFinderPattern(startX, startY, cells, gridSize) {
-            const finderSize = 7;
-            
-            for (let y = 0; y < finderSize; y++) {
-                for (let x = 0; x < finderSize; x++) {
-                    const index = (startY + y) * gridSize + (startX + x);
-                    if (index < cells.length) {
-                        if (y === 0 || y === finderSize - 1 || x === 0 || x === finderSize - 1) {
-                            cells[index].classList.remove('white');
-                            cells[index].classList.add('finder');
-                        }
-                        else if (y === 1 || y === finderSize - 2 || x === 1 || x === finderSize - 2) {
-                            cells[index].classList.remove('finder');
-                            cells[index].classList.add('finder-inner');
-                        }
-                        else if (y >= 2 && y <= 4 && x >= 2 && x <= 4) {
-                            cells[index].classList.remove('finder-inner');
-                            cells[index].classList.add('finder-center');
-                        }
-                        else if (y === 3 && x === 3) {
-                            cells[index].classList.remove('finder-center');
-                            cells[index].classList.add('finder');
-                        }
-                    }
-                }
-            }
+      }
+
+      let profile = loadProfile();
+      let hintTimer;
+
+      function showHint(message, duration = 2600) {
+        clearTimeout(hintTimer);
+        hint.textContent = message;
+        hint.classList.add("show");
+        hintTimer = setTimeout(() => hint.classList.remove("show"), duration);
+      }
+
+      function openEditor() {
+        nameInput.value = profile.name;
+        genderInput.value = profile.gender;
+        plateInput.value = profile.plate;
+        identityInput.value = profile.identity;
+        editor.classList.add("open");
+        editor.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        setTimeout(() => nameInput.focus(), 80);
+      }
+
+      function closeEditor() {
+        editor.classList.remove("open");
+        editor.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      function normalizePlate(value) {
+        return value.trim().replace(/\s+/g, "").toUpperCase();
+      }
+
+      function renderProfile() {
+        $("summaryName").textContent = profile.name;
+        $("detailName").textContent = profile.name;
+        $("detailGender").textContent = profile.gender;
+        $("summaryPlate").textContent = profile.plate;
+        $("detailIdentity").textContent = profile.identity;
+        drawQR(profile.name + "|" + profile.gender + "|" + profile.plate + "|" + profile.identity);
+      }
+
+      function hashText(text) {
+        let hash = 2166136261;
+        for (let i = 0; i < text.length; i++) {
+          hash ^= text.charCodeAt(i);
+          hash = Math.imul(hash, 16777619);
         }
-        
-        function drawAlignmentPattern(centerX, centerY, cells, gridSize) {
-            const alignmentSize = 5;
-            
-            if (centerX < 2 || centerX >= gridSize - alignmentSize + 2 || 
-                centerY < 2 || centerY >= gridSize - alignmentSize + 2) {
-                return;
+        return hash >>> 0;
+      }
+
+      function randomFrom(seed) {
+        return () => {
+          seed += 0x6D2B79F5;
+          let t = seed;
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function drawQR(seedText) {
+        const size = 53;
+        const qr = $("qrcode");
+        const cells = new Uint8Array(size * size);
+        const reserved = new Uint8Array(size * size);
+        const rand = randomFrom(hashText(seedText));
+        const at = (x, y) => y * size + x;
+
+        const mark = (x, y, value, reserve = true) => {
+          if (x < 0 || y < 0 || x >= size || y >= size) return;
+          cells[at(x, y)] = value;
+          if (reserve) reserved[at(x, y)] = 1;
+        };
+
+        const finder = (left, top) => {
+          for (let y = -1; y <= 7; y++) {
+            for (let x = -1; x <= 7; x++) {
+              const border = x === 0 || x === 6 || y === 0 || y === 6;
+              const center = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+              mark(left + x, top + y, border || center ? 1 : 0);
             }
-            
-            for (let y = 0; y < alignmentSize; y++) {
-                for (let x = 0; x < alignmentSize; x++) {
-                    const index = (centerY + y) * gridSize + (centerX + x);
-                    if (index < cells.length) {
-                        if (cells[index].classList.contains('finder') || 
-                            cells[index].classList.contains('finder-inner') ||
-                            cells[index].classList.contains('finder-center') ||
-                            cells[index].classList.contains('timing')) {
-                            continue;
-                        }
-                        
-                        if (y === 0 || y === alignmentSize - 1 || x === 0 || x === alignmentSize - 1) {
-                            cells[index].classList.remove('white');
-                            cells[index].classList.add('alignment');
-                        }
-                        else if (y === 2 && x === 2) {
-                            cells[index].classList.remove('white');
-                            cells[index].classList.add('alignment-center');
-                        }
-                        else {
-                            cells[index].classList.remove('white');
-                            cells[index].classList.remove('alignment');
-                            cells[index].classList.add('alignment-inner');
-                        }
-                    }
-                }
+          }
+        };
+
+        const alignment = (cx, cy) => {
+          for (let y = -2; y <= 2; y++) {
+            for (let x = -2; x <= 2; x++) {
+              const ring = Math.abs(x) === 2 || Math.abs(y) === 2;
+              mark(cx + x, cy + y, ring || (x === 0 && y === 0) ? 1 : 0);
             }
-        }
-        
-        function drawTimingPattern(cells, gridSize) {
-            for (let x = 8; x < gridSize - 8; x++) {
-                const index = 6 * gridSize + x;
-                if (index < cells.length && !cells[index].classList.contains('finder')) {
-                    cells[index].classList.remove('white');
-                    cells[index].classList.add('timing');
-                    
-                    if (x % 2 === 0) {
-                        cells[index].classList.remove('timing');
-                        cells[index].classList.add('white');
-                    } else {
-                        cells[index].classList.add('black');
-                    }
-                }
-            }
-            
-            for (let y = 8; y < gridSize - 8; y++) {
-                const index = y * gridSize + 6;
-                if (index < cells.length && !cells[index].classList.contains('finder')) {
-                    cells[index].classList.remove('white');
-                    cells[index].classList.add('timing');
-                    
-                    if (y % 2 === 0) {
-                        cells[index].classList.remove('timing');
-                        cells[index].classList.add('white');
-                    } else {
-                        cells[index].classList.add('black');
-                    }
-                }
-            }
-        }
-        
-        function drawVeryDenseAndFragmentedData(cells, gridSize) {
-            for (let i = 0; i < cells.length; i++) {
-                const y = Math.floor(i / gridSize);
-                const x = i % gridSize;
-                
-                if ((x < 9 && y < 9) || 
-                    (x >= gridSize - 8 && y < 9) || 
-                    (x < 9 && y >= gridSize - 8)) {
-                    continue;
-                }
-                
-                if (y === 6 || x === 6) {
-                    continue;
-                }
-                
-                const alignmentPatterns = [
-                    {x: 26, y: 26},
-                    {x: 17, y: 17},
-                    {x: 17, y: 36},
-                    {x: 36, y: 17},
-                    {x: 36, y: 36}
-                ];
-                
-                let inAlignment = false;
-                for (const pattern of alignmentPatterns) {
-                    if (x >= pattern.x - 2 && x <= pattern.x + 2 && 
-                        y >= pattern.y - 2 && y <= pattern.y + 2) {
-                        inAlignment = true;
-                        break;
-                    }
-                }
-                
-                if (inAlignment) {
-                    continue;
-                }
-                
-                let density = 0;
-                
-                const region1 = (x > 12 && x < 40 && y > 12 && y < 40);
-                const region2 = (x % 3 === 0 && y % 3 === 0);
-                const region3 = (x % 4 === 0 || y % 4 === 0);
-                const region4 = (x + y) % 5 === 0;
-                const region5 = (x * y) % 7 < 3;
-                
-                density = 0.55;
-                
-                if (region1) density += 0.10;
-                if (region2) density += 0.04;
-                if (region3) density -= 0.02;
-                if (region4) density += 0.08;
-                if (region5) density -= 0.03;
-                
-                density = Math.max(0.43, Math.min(0.72, density));
-                
-                const randomFactor = Math.random() * 0.18 - 0.09;
-                density += randomFactor;
-                
-                if (Math.random() < density) {
-                    cells[i].classList.remove('white');
-                    cells[i].classList.add('black');
-                }
-            }
-        }
-        
-        function addTinyDataFragments(cells, gridSize) {
-            for (let i = 0; i < cells.length; i++) {
-                const y = Math.floor(i / gridSize);
-                const x = i % gridSize;
-                
-                if (cells[i].classList.contains('white')) {
-                    if ((x < 10 && y < 10) || 
-                        (x >= gridSize - 9 && y < 10) || 
-                        (x < 10 && y >= gridSize - 9) ||
-                        y === 6 || x === 6) {
-                        continue;
-                    }
-                    
-                    const pattern1 = (x % 2 === 1 && y % 2 === 1);
-                    const pattern2 = (x % 3 === 2 || y % 3 === 2);
-                    const pattern3 = (x + y) % 4 === 0;
-                    const pattern4 = (x * y) % 11 < 3;
-                    
-                    const patterns = [pattern1, pattern2, pattern3, pattern4];
-                    const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
-                    
-                    if (randomPattern && Math.random() < 0.15) {
-                        cells[i].classList.remove('white');
-                        cells[i].classList.add('black');
-                    }
-                }
-            }
+          }
+        };
+
+        finder(0, 0);
+        finder(size - 7, 0);
+        finder(0, size - 7);
+
+        for (let i = 8; i < size - 8; i++) {
+          mark(i, 6, i % 2 ? 0 : 1);
+          mark(6, i, i % 2 ? 0 : 1);
         }
 
-        function updateTime() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const timeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-            document.getElementById('timeDisplay').textContent = timeString;
+        for (let y = 0; y < size; y++) {
+          for (let x = 0; x < size; x++) {
+            const index = at(x, y);
+            if (!reserved[index]) cells[index] = rand() > .51 ? 1 : 0;
+          }
         }
 
-        generateRealisticQR();
-        updateTime();
-        setInterval(updateTime, 1000);
+        alignment(18, 18);
+        alignment(34, 18);
+        alignment(18, 34);
+        alignment(34, 34);
+        alignment(45, 45);
+        alignment(45, 27);
 
-        setInterval(() => {
-            const qrBox = document.getElementById('qrcode');
-            const cells = qrBox.querySelectorAll('div');
-            
-            for (let i = 0; i < 4; i++) {
-                const randomCell = Math.floor(Math.random() * cells.length);
-                const cell = cells[randomCell];
-                
-                if (!cell.classList.contains('finder') && 
-                    !cell.classList.contains('finder-inner') &&
-                    !cell.classList.contains('finder-center') &&
-                    !cell.classList.contains('timing') &&
-                    !cell.classList.contains('alignment') &&
-                    !cell.classList.contains('alignment-inner') &&
-                    !cell.classList.contains('alignment-center')) {
-                    
-                    if (cell.classList.contains('black')) {
-                        cell.classList.remove('black');
-                        cell.classList.add('white');
-                    } else if (cell.classList.contains('white')) {
-                        cell.classList.remove('white');
-                        cell.classList.add('black');
-                    }
-                }
-            }
-        }, 4000);
-    </script>
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < cells.length; i++) {
+          const cell = document.createElement("i");
+          if (cells[i]) cell.className = "on";
+          fragment.appendChild(cell);
+        }
+        qr.replaceChildren(fragment);
+      }
+
+      function updateTime() {
+        const now = new Date();
+        const two = (number) => String(number).padStart(2, "0");
+        $("timeDisplay").textContent =
+          `${now.getFullYear()}-${two(now.getMonth() + 1)}-${two(now.getDate())} ` +
+          `${two(now.getHours())}:${two(now.getMinutes())}:${two(now.getSeconds())}`;
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = nameInput.value.trim();
+        const plate = normalizePlate(plateInput.value);
+        const identity = identityInput.value.trim().replace(/\s+/g, "");
+        if (!name || !plate || !identity) return;
+
+        profile = { name, gender: genderInput.value, plate, identity };
+        try { localStorage.setItem(storageKey, JSON.stringify(profile)); } catch (_) {}
+        renderProfile();
+        closeEditor();
+        showHint("已生成新通行码，长按页面可继续修改", 2200);
+      });
+
+      $("cancelEdit").addEventListener("click", closeEditor);
+      editor.addEventListener("click", (event) => {
+        if (event.target === editor) closeEditor();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && editor.classList.contains("open")) closeEditor();
+        if ((event.key === "e" || event.key === "E") && !editor.classList.contains("open")) openEditor();
+      });
+
+      app.addEventListener("dblclick", openEditor);
+
+      let pressTimer;
+      let startX = 0;
+      let startY = 0;
+      app.addEventListener("pointerdown", (event) => {
+        startX = event.clientX;
+        startY = event.clientY;
+        clearTimeout(pressTimer);
+        pressTimer = setTimeout(openEditor, 650);
+      });
+      app.addEventListener("pointermove", (event) => {
+        if (Math.hypot(event.clientX - startX, event.clientY - startY) > 10) clearTimeout(pressTimer);
+      });
+      ["pointerup", "pointercancel", "pointerleave"].forEach((name) => {
+        app.addEventListener(name, () => clearTimeout(pressTimer));
+      });
+
+      renderProfile();
+      updateTime();
+      setInterval(updateTime, 1000);
+      setTimeout(() => showHint("长按页面可修改姓名、性别、车牌和身份证", 3000), 700);
+    })();
+  </script>
 </body>
 </html>
