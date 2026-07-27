@@ -48,7 +48,7 @@
       z-index: -1;
       width: 100%;
       height: 100%;
-      opacity: .72;
+      opacity: .9;
       pointer-events: none;
     }
 
@@ -369,23 +369,7 @@
 </head>
 <body>
   <main class="app" id="app">
-    <svg class="network" viewBox="0 0 473 914" preserveAspectRatio="none" aria-hidden="true">
-      <g fill="none" stroke="#008f84" stroke-width="1">
-        <path d="M84 8 L195 0 L338 16 L195 67 L84 8 L128 77 L33 123 L84 8"/>
-        <path d="M195 0 L195 67 L207 126 M128 77 L195 67 L207 126 M84 8 L207 126" opacity=".78"/>
-        <path d="M338 16 L195 67 L128 77 L33 123" opacity=".58"/>
-        <path d="M0 655 L44 628 L0 564 M44 628 L98 702" opacity=".8"/>
-        <path d="M473 613 L431 644 L473 686 M431 644 L473 720" opacity=".74"/>
-        <path d="M0 742 L47 716 L0 678 M473 802 L427 770 L473 744" opacity=".52"/>
-      </g>
-      <g fill="#00aeb9">
-        <circle cx="84" cy="8" r="4.2"/><circle cx="195" cy="0" r="3.8"/>
-        <circle cx="338" cy="16" r="2.6"/><circle cx="195" cy="67" r="4.1"/>
-        <circle cx="128" cy="77" r="3.2"/><circle cx="33" cy="123" r="2.7"/>
-        <circle cx="0" cy="655" r="2.6"/><circle cx="473" cy="613" r="2.7"/>
-        <circle cx="0" cy="742" r="2.4"/><circle cx="473" cy="802" r="2.5"/>
-      </g>
-    </svg>
+    <canvas class="network" id="networkCanvas" aria-hidden="true"></canvas>
 
     <header class="brand-header">
       <div class="brand" aria-label="北京理工大学（珠海）">
@@ -485,6 +469,135 @@
       const identityInput = $("identityInput");
       const hint = $("editHint");
       const app = $("app");
+      const networkCanvas = $("networkCanvas");
+
+      function startNetworkAnimation() {
+        const context = networkCanvas.getContext("2d");
+        if (!context) return;
+
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let width = 0;
+        let height = 0;
+        let particles = [];
+        let lastFrame = 0;
+        let seed = 0x5a17c9e3;
+
+        const random = () => {
+          seed ^= seed << 13;
+          seed ^= seed >>> 17;
+          seed ^= seed << 5;
+          return (seed >>> 0) / 4294967296;
+        };
+
+        function createParticle(index, count, headerHeight) {
+          let x;
+          let y;
+
+          if (index < Math.round(count * .44)) {
+            x = random() * width;
+            y = random() * Math.min(height, headerHeight * 1.3);
+          } else if (index < Math.round(count * .82)) {
+            const onLeft = random() < .5;
+            const edgeWidth = Math.max(28, width * .14);
+            x = onLeft ? random() * edgeWidth : width - random() * edgeWidth;
+            y = headerHeight + random() * Math.max(1, height - headerHeight);
+          } else {
+            x = random() * width;
+            y = random() * height;
+          }
+
+          const angle = random() * Math.PI * 2;
+          const speed = .008 + random() * .013;
+          return {
+            x,
+            y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: 1.9 + random() * 2.3,
+            phase: random() * Math.PI * 2,
+            pulse: .0012 + random() * .0015
+          };
+        }
+
+        function resizeNetwork() {
+          const box = app.getBoundingClientRect();
+          const nextWidth = Math.max(1, box.width);
+          const nextHeight = Math.max(1, app.scrollHeight, box.height);
+          const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+          width = nextWidth;
+          height = nextHeight;
+          networkCanvas.width = Math.round(width * pixelRatio);
+          networkCanvas.height = Math.round(height * pixelRatio);
+          networkCanvas.style.width = `${width}px`;
+          networkCanvas.style.height = `${height}px`;
+          context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+          seed = 0x5a17c9e3;
+          const count = Math.max(24, Math.min(36, Math.round(width / 473 * 30)));
+          const headerHeight = document.querySelector(".brand-header").getBoundingClientRect().height;
+          particles = Array.from({ length: count }, (_, index) => createParticle(index, count, headerHeight));
+        }
+
+        function drawNetwork(time, delta) {
+          context.clearRect(0, 0, width, height);
+
+          if (!prefersReducedMotion.matches) {
+            for (const particle of particles) {
+              particle.x += particle.vx * delta;
+              particle.y += particle.vy * delta;
+
+              if (particle.x < -18) particle.x = width + 18;
+              if (particle.x > width + 18) particle.x = -18;
+              if (particle.y < -18) particle.y = height + 18;
+              if (particle.y > height + 18) particle.y = -18;
+            }
+          }
+
+          const linkDistance = Math.max(105, Math.min(160, width * .33));
+          for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+              const dx = particles[i].x - particles[j].x;
+              const dy = particles[i].y - particles[j].y;
+              const distance = Math.hypot(dx, dy);
+              if (distance >= linkDistance) continue;
+
+              const strength = 1 - distance / linkDistance;
+              context.beginPath();
+              context.moveTo(particles[i].x, particles[i].y);
+              context.lineTo(particles[j].x, particles[j].y);
+              context.strokeStyle = `rgba(0, 151, 145, ${(.09 + strength * .32).toFixed(3)})`;
+              context.lineWidth = .75 + strength * .35;
+              context.stroke();
+            }
+          }
+
+          for (const particle of particles) {
+            const breathing = .86 + Math.sin(time * particle.pulse + particle.phase) * .14;
+            context.beginPath();
+            context.arc(particle.x, particle.y, particle.radius * breathing, 0, Math.PI * 2);
+            context.fillStyle = "rgba(0, 180, 193, .88)";
+            context.fill();
+          }
+        }
+
+        function animateNetwork(time) {
+          if (!lastFrame) lastFrame = time;
+          const elapsed = time - lastFrame;
+          if (elapsed >= 30) {
+            drawNetwork(time, Math.min(elapsed, 50));
+            lastFrame = time;
+          }
+          requestAnimationFrame(animateNetwork);
+        }
+
+        resizeNetwork();
+        drawNetwork(0, 0);
+        new ResizeObserver(resizeNetwork).observe(app);
+        requestAnimationFrame(animateNetwork);
+      }
+
+      startNetworkAnimation();
 
       function requestWechatToolbarHide() {
         try {
