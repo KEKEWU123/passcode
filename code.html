@@ -489,6 +489,20 @@
       const hint = $("editHint");
       const app = $("app");
 
+      function requestWechatToolbarHide() {
+        try {
+          const bridge = window.WeixinJSBridge;
+          if (bridge && typeof bridge.call === "function") bridge.call("hideToolbar");
+        } catch (_) {}
+      }
+
+      if (window.WeixinJSBridge) {
+        requestWechatToolbarHide();
+      } else {
+        document.addEventListener("WeixinJSBridgeReady", requestWechatToolbarHide, { once: true });
+      }
+      window.addEventListener("pageshow", requestWechatToolbarHide);
+
       function loadProfile() {
         try {
           const saved = JSON.parse(localStorage.getItem(storageKey));
